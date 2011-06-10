@@ -69,6 +69,8 @@ class LogoutListener implements ListenerInterface
     {
         $request = $event->getRequest();
 
+        $targetUrl = str_replace('{_locale}', $request->getSession()->getLocale(), $this->targetUrl);
+
         if ($this->logoutPath !== $request->getPathInfo()) {
             return;
         }
@@ -80,7 +82,7 @@ class LogoutListener implements ListenerInterface
                 throw new \RuntimeException('Logout Success Handler did not return a Response.');
             }
         } else {
-            $response = new RedirectResponse(0 !== strpos($this->targetUrl, 'http') ? $request->getUriForPath($this->targetUrl) : $this->targetUrl, 302);
+            $response = new RedirectResponse(0 !== strpos($targetUrl, 'http') ? $request->getUriForPath($targetUrl) : $targetUrl, 302);
         }
 
         // handle multiple logout attempts gracefully
